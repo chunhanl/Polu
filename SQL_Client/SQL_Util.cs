@@ -204,7 +204,7 @@ namespace SQL_Client
         }
 
 
-        public bool updateStl(byte[] arr, int id)
+        public bool updateStl(byte[] arr, int id, SQL_Structure.Stl option)
         {
             conn.Open();
             MySqlCommand cmd = conn.CreateCommand();
@@ -215,10 +215,26 @@ namespace SQL_Client
                 cmd.ExecuteNonQuery();
             }catch(Exception)
             {
-                ;
+                MessageBox.Show("資料庫出問題，請洽苦命的工程師 ErrorA01");
             }
 
-            cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl=" + "@stl" + " where parent_id=" + id.ToString();
+            switch(option){
+                case SQL_Structure.Stl.main :
+                    cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl=" 
+                                            + "@stl" + " where parent_id=" + id.ToString();
+                    break;
+                case SQL_Structure.Stl.mainstone:
+                    cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_mainstone="
+                                        + "@stl" + " where parent_id=" + id.ToString();
+                    break;
+                case SQL_Structure.Stl.substone:
+                    cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_substone="
+                                        + "@stl" + " where parent_id=" + id.ToString();
+                    break;
+                default:
+                    conn.Close();
+                    return false;                    
+            }
             cmd.Parameters.Add("@stl", MySqlDbType.MediumBlob);
             cmd.Parameters["@stl"].Value = arr;
             cmd.ExecuteNonQuery();
@@ -387,7 +403,8 @@ namespace SQL_Client
         public enum Manufacture { taiwan, china, notgiven };
         public enum Stone { diamond, jade, redblue, pearl, other, none };
         public enum StoneShape {none, drop, heart, circle, oval, rect, eye, god, other};
-        
+        public enum Stl {main, mainstone, substone };
+
         public string gender { get; set; }
         public string category { get; set; }
         public string manufacture { get; set; }
@@ -402,7 +419,9 @@ namespace SQL_Client
 
         public Image preview_image;
         public string model3dm;
-        public byte[] modelstl;
+        public byte[] modelstl_main;
+        public byte[] modelstl_mainstone;
+        public byte[] modelstl_substone;
 
 
         public SQL_Structure()

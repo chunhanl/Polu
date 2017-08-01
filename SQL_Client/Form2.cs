@@ -18,14 +18,19 @@ namespace SQL_Client
         //temp
         private string dir_path = @"D:\Polu_DB\Models";
         private string path_img = "";
-        private string path_stl = "";
+        private string path_stl_main = "";
+        private string path_stl_mainstone = "";
+        private string path_stl_substone = "";
         private string path_3dm = "";
         private bool isImgNeedUpdate = false;
-        private bool isStlNeedUpdate =false;
+        private bool isStlMainNeedUpdate =false;
+        private bool isStlMainStoneNeedUpdate = false;
+        private bool isStlSubStone1NeedUpdate = false;
         private bool is3dmNeedUpdate =false;
         IEnumerable<string> model_dirs;
 
         private int current_pos = 0;
+
         //data member
         private string account;
         private string password;
@@ -43,7 +48,8 @@ namespace SQL_Client
             account = string.Empty;
             password = string.Empty;
             //ask user to login
-            Form1 loginForm = new Form1();
+
+           /* Form1 loginForm = new Form1();
             if (loginForm.ShowDialog() != DialogResult.OK)
             {
                 Environment.Exit(Environment.ExitCode);
@@ -54,7 +60,7 @@ namespace SQL_Client
                 account = loginForm.accountStr();
                 password = loginForm.passwordStr();
                 loginForm.Close();
-            }
+            }*/
 
 
             InitializeComponent();
@@ -64,9 +70,9 @@ namespace SQL_Client
 
             //initial sql
             sql = new SQL_Util();
-            sql.IP = "192.168.1.247";
-            sql.userAccount = account;//account;
-            sql.userPwd = password;//password;
+            sql.IP = "118.170.189.76";
+            sql.userAccount = "shooter";//account;
+            sql.userPwd = "11111111";//password;
             sql.database = "sys";
 
             sql.table = "main_table";
@@ -97,6 +103,114 @@ namespace SQL_Client
             this.Close();
         }
 
+        private bool readSelectedIntoModel()
+        {
+            if (list_category.SelectedIndex != -1 && list_gender.SelectedIndex != -1 && list_manufact.SelectedIndex != -1)
+            {
+                current_model.category = Enum.GetName(typeof(SQL_Structure.Category), list_category.SelectedIndex);
+                current_model.manufacture = Enum.GetName(typeof(SQL_Structure.Manufacture), list_manufact.SelectedIndex);
+                current_model.gender = Enum.GetName(typeof(SQL_Structure.Gender), list_gender.SelectedIndex);
+            }
+            else
+            {
+                MessageBox.Show("前三格選一下拜託~~");
+                return false;
+            }
+
+            float f = current_model.weight;
+            double d = current_model.work_cost;
+            if (!float.TryParse(textB_weight.ToString(), out f) && string.Equals(textB_weight, string.Empty))
+            {
+                MessageBox.Show("重量只能填數字喔");
+                return false;
+            }
+            else
+            {
+                current_model.weight = f;
+            }
+            if (!double.TryParse(textB_cost.ToString(), out d) && string.Equals(textB_cost, string.Empty))
+            {
+                MessageBox.Show("重量只能填數字喔");
+                return false;
+            }
+            else
+            {
+                current_model.work_cost = d;
+            }
+            current_model.comment = textB_comment.Text;
+            return true;
+        }
+
+        private bool checkFilesAndUpdate()
+        {
+            if (isImgNeedUpdate == true)
+            {
+                if (current_model.preview_image != null)
+                {
+                    sql.updateImg(current_model.preview_image, int.Parse(current_model.id));
+                }
+                else {
+                    MessageBox.Show("無預覽圖");
+                    return false;
+                }
+            }
+            if (is3dmNeedUpdate)
+            {
+                current_model.model3dm = path_3dm;
+                if (current_model.model3dm != null)
+                {
+                    sql.update3dm(current_model.model3dm, int.Parse(current_model.id));
+                }
+                else
+                {
+                    MessageBox.Show("無3dm圖");
+                    return false;
+                }
+            }
+
+            if (isStlMainNeedUpdate)
+            {
+                current_model.modelstl_main = FileToByteArray(path_stl_main);
+                if (current_model.modelstl_main != null)
+                {
+                    sql.updateStl(current_model.modelstl_main, int.Parse(current_model.id), SQL_Structure.Stl.main);
+                }
+                else
+                {
+                    MessageBox.Show("無stl圖");
+                    return false;
+                }
+            }
+            if (isStlMainStoneNeedUpdate)
+            {
+                current_model.modelstl_mainstone = FileToByteArray(path_stl_mainstone);
+                if (current_model.modelstl_mainstone != null)
+                {
+                    sql.updateStl(current_model.modelstl_mainstone, int.Parse(current_model.id), SQL_Structure.Stl.mainstone);
+                }
+                else
+                {
+                    MessageBox.Show("無stl主石圖");
+                    return false;
+                }
+            }
+            if (isStlSubStone1NeedUpdate)
+            {
+                current_model.modelstl_substone = FileToByteArray(path_stl_substone);
+                if (current_model.modelstl_substone != null)
+                {
+                    sql.updateStl(current_model.modelstl_substone, int.Parse(current_model.id), SQL_Structure.Stl.substone);
+                }
+                else
+                {
+                    MessageBox.Show("無stl副石圖");
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         private void Upload_Click(object sender, EventArgs e)
         {
             if (current_model==null)
@@ -107,135 +221,43 @@ namespace SQL_Client
 
             if (sql.checkConnection())
             {
-                //Insert(string model_id,string category,float weight,double workcost,string producer,string gender, string stone)
-         
                 if (current_model.isExistInDB)
-                {
-                    if (list_category.SelectedIndex != -1 && list_gender.SelectedIndex != -1 && list_manufact.SelectedIndex != -1)
+                {                
+                    if( readSelectedIntoModel() == false)
                     {
-                        current_model.category = Enum.GetName(typeof(SQL_Structure.Category), list_category.SelectedIndex);
-                        current_model.manufacture = Enum.GetName(typeof(SQL_Structure.Manufacture), list_manufact.SelectedIndex);
-                        current_model.gender = Enum.GetName(typeof(SQL_Structure.Gender), list_gender.SelectedIndex);
+                        //資料未輸入完全
+                        return; 
                     }
-                    else
-                    {
-                        MessageBox.Show("前三格選一下拜託~~");
-                        return;
-                    }
-
-                    float f = current_model.weight;
-                    double d = current_model.work_cost;
-                    if (!float.TryParse(textB_weight.ToString(), out f) && string.Equals(textB_weight, string.Empty))
-                    {
-                        MessageBox.Show("重量只能填數字喔");
-                        return;
-                    }
-                    else
-                    {
-                        current_model.weight = f;
-                    }
-                    if (!double.TryParse(textB_cost.ToString(), out d) && string.Equals(textB_cost, string.Empty))
-                    {
-                        MessageBox.Show("重量只能填數字喔");
-                        return;
-                    }
-                    else
-                    {
-                        current_model.work_cost = d;
-                    }
-                    current_model.comment = textB_comment.Text;
                     this.status.BackColor = Color.Red;
                     this.status.Text = "入庫中";
                     this.Refresh();
+
                     sql.Update(current_model);
-
-
-                    if (isImgNeedUpdate == true)
-                    {
-                        sql.updateImg(current_model.preview_image, int.Parse(current_model.id));
-                    }
-                    if (is3dmNeedUpdate)
-                    {
-                        current_model.model3dm = path_3dm;
-                        if (current_model.model3dm != null)
-                        {
-                            sql.update3dm(current_model.model3dm, int.Parse(current_model.id));
-                        }
-                    }
-                     
-                    if (isStlNeedUpdate)
-                    {
-                        current_model.modelstl = FileToByteArray(path_stl);
-                        if (current_model.modelstl != null)
-                        {
-                            sql.updateStl(current_model.modelstl, int.Parse(current_model.id));
-                        }
-                    }
-                    this.status.BackColor = Color.YellowGreen;
-                    this.status.Text = "已入庫";
-                }
-                else
-                {
-                    if (list_category.SelectedIndex != -1 && list_gender.SelectedIndex != -1 && list_manufact.SelectedIndex != -1)
-                    {
-                        current_model.category = Enum.GetName(typeof(SQL_Structure.Category), list_category.SelectedIndex);
-                        current_model.manufacture = Enum.GetName(typeof(SQL_Structure.Manufacture), list_manufact.SelectedIndex);
-                        current_model.gender = Enum.GetName(typeof(SQL_Structure.Gender), list_gender.SelectedIndex);
-                    }
-                    else
-                    {
-                        MessageBox.Show("前三格選一下拜託~~");
-                        return;
-                    }
-
-                    float f = 0;
-                    double d = 0;
-                    if (!float.TryParse(textB_weight.ToString(), out f) && string.Equals(textB_weight, string.Empty))
-                    {
-                        MessageBox.Show("重量只能填數字喔");
-                        return;
-                    }
-                    else
-                    {
-                        current_model.weight = f;
-                    }
-                    if (!double.TryParse(textB_cost.ToString(), out d) && string.Equals(textB_cost, string.Empty))
-                    {
-                        MessageBox.Show("重量只能填數字喔");
-                        return;
-                    }
-                    else
-                    {
-                        current_model.work_cost = d;
-                    }
-                    current_model.comment = textB_comment.Text;
-
-                    current_model.model3dm = path_3dm;
-                    current_model.modelstl = FileToByteArray(path_stl);
-                    if (current_model.model3dm == null || current_model.modelstl == null)
-                    {
-                        MessageBox.Show("模型要補齊喔");
-                        return;
-                    }
-
-
-                    this.status.BackColor = Color.Red;
-                    this.status.Text = "入庫中";
-                    this.Refresh();
-                    sql.Insert(current_model);
-                     
-                    if (isImgNeedUpdate == true)
-                    {
-                        sql.updateImg(current_model.preview_image, int.Parse(current_model.id));
-                    }
-                     
-                    sql.update3dm(current_model.model3dm, int.Parse(current_model.id));
-                     
-                    sql.updateStl(current_model.modelstl, int.Parse(current_model.id));
-                     
+                    checkFilesAndUpdate();
                     
                     this.status.BackColor = Color.YellowGreen;
                     this.status.Text = "已入庫";
+                    this.Refresh();
+                }
+                else
+                {
+                    if (readSelectedIntoModel() == false)
+                    {
+                        //資料未輸入完全
+                        return;
+                    }
+                                        
+                    checkFilesAndUpdate();
+                    this.status.BackColor = Color.Red;
+                    this.status.Text = "入庫中";
+                    this.Refresh();
+
+                    sql.Insert(current_model);
+                    checkFilesAndUpdate();
+                    
+                    this.status.BackColor = Color.YellowGreen;
+                    this.status.Text = "已入庫";
+                    this.Refresh();
                 }
             }
             else
@@ -254,7 +276,9 @@ namespace SQL_Client
                 {
                     string path_tmp = model_dirs.ElementAt<string>(current_pos);
                     string ImportModelID = path_tmp.Substring(dir_path.Length + 1);
-                    isStlNeedUpdate = false;
+                    isStlMainNeedUpdate = false;
+                    isStlMainStoneNeedUpdate = false;
+                    isStlSubStone1NeedUpdate = false;
                     is3dmNeedUpdate = false;
                     isImgNeedUpdate = false;
 
@@ -276,38 +300,36 @@ namespace SQL_Client
                         this.status.Text = "未入庫";
                         this.txt_LMT.Text = "未入庫";
                         is3dmNeedUpdate = true;
-                        isStlNeedUpdate = true;
-                        //MessageBox.Show(current_model.modelID + " is new");
+                        isStlMainNeedUpdate = true;
+                        isImgNeedUpdate = true;
 
                         //GET image from D:\ .....
+                        Image img_tmp;
                         try
                         {
-                            Image img_tmp = Image.FromFile(path_tmp + @"\" + path_tmp.Substring(dir_path.Length + 1) + ".jpg");
-                            setImgBox(img_tmp);
-                            current_model.preview_image = img_tmp;
+                            img_tmp = Image.FromFile(path_tmp + @"\" + path_tmp.Substring(dir_path.Length + 1) + ".jpg");
                             path_img = path_tmp + @"\" + path_tmp.Substring(dir_path.Length + 1) + ".jpg";
-                            this.txtB_preimage.Text = path_img;
-                            isImgNeedUpdate = true;
                         }
                         catch (Exception)
                         {
                             try
                             {
                                 IEnumerable<string> files = Directory.GetFiles(path_tmp, "*.jpg", SearchOption.TopDirectoryOnly);
-                                Image img_tmp = Image.FromFile(files.ElementAt<string>(0));
-                                setImgBox(img_tmp);
-                                current_model.preview_image = img_tmp;
+                                img_tmp = Image.FromFile(files.ElementAt<string>(0));
                                 path_img = files.ElementAt<string>(0);
                                 this.txtB_preimage.Text = path_img;
-                                isImgNeedUpdate = true;
                             }
                             catch (Exception)
                             {
+                                img_tmp = null;
                                 setImgBox(null);
                                 path_img = "無預覽圖";
                                 this.txtB_preimage.Text = path_img;
                             }
                         }
+                        setImgBox(img_tmp);               
+                        current_model.preview_image = img_tmp;
+                        this.txtB_preimage.Text = path_img;
 
                         //GET 3dm stl from D:\ .....
                         try
@@ -315,12 +337,13 @@ namespace SQL_Client
                             IEnumerable<string> files = Directory.GetFiles(path_tmp, "*.3dm", SearchOption.TopDirectoryOnly);
                             path_3dm = files.ElementAt<string>(0);
                             IEnumerable<string> files2 = Directory.GetFiles(path_tmp, "*.stl", SearchOption.TopDirectoryOnly);
-                            path_stl = files2.ElementAt<string>(0);
+                            path_stl_main = files2.ElementAt<string>(0);
                             this.txtB_3dm.Text = path_3dm;
-                            this.txtB_stl.Text = path_stl;
+                            this.txtB_stl.Text = path_stl_main;
                         }
                         catch (Exception)
                         {
+                            MessageBox.Show("找不到3dm stl檔案，請手動選取^^");
                         }
 
 
@@ -430,7 +453,7 @@ namespace SQL_Client
         {
             list_category.Items.Add("戒指");
             list_category.Items.Add("墜子");
-            list_category.Items.Add("手環");
+            list_category.Items.Add("手鍊");
             list_category.Items.Add("手鐲");
             list_category.Items.Add("耳環");
             list_category.Items.Add("項鍊");
@@ -503,7 +526,6 @@ namespace SQL_Client
             stoneform.Dispose();
             stoneInfoRefresh();
         }
-
         private void btn_pre_Click(object sender, EventArgs e)
         {
             if (current_pos >= 2)
@@ -517,7 +539,7 @@ namespace SQL_Client
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btn_preview_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             //如果存在模型資料夾 開啟資料夾為預設位置
@@ -535,8 +557,7 @@ namespace SQL_Client
             }
             openFileDialog1.Dispose();
         }
-
-        private void button2_Click(object sender, EventArgs e)
+        private void btn_3dm_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             if (Directory.Exists(dir_path + @"\" + current_model.modelID))
@@ -552,8 +573,7 @@ namespace SQL_Client
             }
             openFileDialog1.Dispose();
         }
-
-        private void button3_Click(object sender, EventArgs e)
+        private void btn_stlmain_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             if (Directory.Exists(dir_path + @"\" + current_model.modelID))
@@ -563,13 +583,44 @@ namespace SQL_Client
             DialogResult result = openFileDialog1.ShowDialog(); // Show the dialog.
             if (result == DialogResult.OK) // Test result.
             {
-                path_stl = openFileDialog1.FileName;
-                this.txtB_stl.Text = path_stl;
-                isStlNeedUpdate = true;
+                path_stl_main = openFileDialog1.FileName;
+                this.txtB_stl.Text = path_stl_main;
+                isStlMainNeedUpdate = true;
             }
             openFileDialog1.Dispose();
         }
-
+        private void btn_stlmainstone_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            if (Directory.Exists(dir_path + @"\" + current_model.modelID))
+            {
+                openFileDialog1.InitialDirectory = dir_path + @"\" + current_model.modelID;
+            }
+            DialogResult result = openFileDialog1.ShowDialog(); // Show the dialog.
+            if (result == DialogResult.OK) // Test result.
+            {
+                path_stl_mainstone = openFileDialog1.FileName;
+                this.txtB_stl.Text = path_stl_mainstone;
+                isStlMainStoneNeedUpdate = true;
+            }
+            openFileDialog1.Dispose();
+        }
+        private void btn_stlsubstone_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            if (Directory.Exists(dir_path + @"\" + current_model.modelID))
+            {
+                openFileDialog1.InitialDirectory = dir_path + @"\" + current_model.modelID;
+            }
+            DialogResult result = openFileDialog1.ShowDialog(); // Show the dialog.
+            if (result == DialogResult.OK) // Test result.
+            {
+                path_stl_substone = openFileDialog1.FileName;
+                this.txtB_stl.Text = path_stl_substone;
+                isStlSubStone1NeedUpdate = true;
+            }
+            openFileDialog1.Dispose();
+        }
 
 
         private byte[] FileToByteArray(string fileName)
@@ -584,10 +635,7 @@ namespace SQL_Client
             return buff;
         }
 
-        private void label6_Click(object sender, EventArgs e)
-        {
 
-        }
 
 
         //old testing

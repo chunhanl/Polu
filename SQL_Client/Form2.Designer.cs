@@ -58,9 +58,15 @@
             this.txtB_preimage = new System.Windows.Forms.TextBox();
             this.txtB_3dm = new System.Windows.Forms.TextBox();
             this.txtB_stl = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btn_preview = new System.Windows.Forms.Button();
+            this.btn_3dm = new System.Windows.Forms.Button();
+            this.btn_stlmain = new System.Windows.Forms.Button();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.btn_stlmainstone = new System.Windows.Forms.Button();
+            this.btn_stlsubstone = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.imgBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -124,7 +130,7 @@
             // GetNext
             // 
             this.GetNext.Font = new System.Drawing.Font("PMingLiU", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.GetNext.Location = new System.Drawing.Point(996, 632);
+            this.GetNext.Location = new System.Drawing.Point(1012, 666);
             this.GetNext.Name = "GetNext";
             this.GetNext.Size = new System.Drawing.Size(185, 59);
             this.GetNext.TabIndex = 8;
@@ -141,7 +147,6 @@
             this.label6.Size = new System.Drawing.Size(60, 16);
             this.label6.TabIndex = 13;
             this.label6.Text = "模型 ID";
-            this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
             // list_category
             // 
@@ -245,7 +250,7 @@
             this.textB_comment.Location = new System.Drawing.Point(927, 341);
             this.textB_comment.Multiline = true;
             this.textB_comment.Name = "textB_comment";
-            this.textB_comment.Size = new System.Drawing.Size(238, 249);
+            this.textB_comment.Size = new System.Drawing.Size(238, 289);
             this.textB_comment.TabIndex = 6;
             // 
             // label7
@@ -261,7 +266,7 @@
             // Upload
             // 
             this.Upload.Font = new System.Drawing.Font("PMingLiU", 15.75F);
-            this.Upload.Location = new System.Drawing.Point(819, 632);
+            this.Upload.Location = new System.Drawing.Point(835, 666);
             this.Upload.Name = "Upload";
             this.Upload.Size = new System.Drawing.Size(171, 59);
             this.Upload.TabIndex = 7;
@@ -276,7 +281,7 @@
             this.textBox3.Multiline = true;
             this.textBox3.Name = "textBox3";
             this.textBox3.ReadOnly = true;
-            this.textBox3.Size = new System.Drawing.Size(257, 124);
+            this.textBox3.Size = new System.Drawing.Size(257, 164);
             this.textBox3.TabIndex = 28;
             this.textBox3.TabStop = false;
             this.textBox3.Text = "石頭資訊:";
@@ -286,7 +291,7 @@
             this.status.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.status.BackColor = System.Drawing.Color.Cornsilk;
             this.status.Font = new System.Drawing.Font("PMingLiU", 21.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.status.Location = new System.Drawing.Point(1055, 12);
+            this.status.Location = new System.Drawing.Point(1055, 21);
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(110, 42);
             this.status.TabIndex = 29;
@@ -294,7 +299,7 @@
             // btn_pre
             // 
             this.btn_pre.Font = new System.Drawing.Font("PMingLiU", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btn_pre.Location = new System.Drawing.Point(628, 632);
+            this.btn_pre.Location = new System.Drawing.Point(644, 666);
             this.btn_pre.Name = "btn_pre";
             this.btn_pre.Size = new System.Drawing.Size(185, 59);
             this.btn_pre.TabIndex = 30;
@@ -306,7 +311,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label8.Location = new System.Drawing.Point(20, 591);
+            this.label8.Location = new System.Drawing.Point(22, 583);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(56, 16);
             this.label8.TabIndex = 31;
@@ -316,7 +321,7 @@
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label9.Location = new System.Drawing.Point(20, 622);
+            this.label9.Location = new System.Drawing.Point(22, 614);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(68, 16);
             this.label9.TabIndex = 32;
@@ -328,13 +333,13 @@
             this.label10.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.label10.Location = new System.Drawing.Point(22, 655);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(54, 16);
+            this.label10.Size = new System.Drawing.Size(70, 16);
             this.label10.TabIndex = 33;
-            this.label10.Text = "stl模型";
+            this.label10.Text = "stl主模型";
             // 
             // txtB_preimage
             // 
-            this.txtB_preimage.Location = new System.Drawing.Point(123, 585);
+            this.txtB_preimage.Location = new System.Drawing.Point(125, 577);
             this.txtB_preimage.Name = "txtB_preimage";
             this.txtB_preimage.ReadOnly = true;
             this.txtB_preimage.Size = new System.Drawing.Size(321, 22);
@@ -343,7 +348,7 @@
             // 
             // txtB_3dm
             // 
-            this.txtB_3dm.Location = new System.Drawing.Point(123, 616);
+            this.txtB_3dm.Location = new System.Drawing.Point(125, 608);
             this.txtB_3dm.Name = "txtB_3dm";
             this.txtB_3dm.ReadOnly = true;
             this.txtB_3dm.Size = new System.Drawing.Size(321, 22);
@@ -359,44 +364,108 @@
             this.txtB_stl.TabIndex = 36;
             this.txtB_stl.TabStop = false;
             // 
-            // button1
+            // btn_preview
             // 
-            this.button1.Location = new System.Drawing.Point(450, 585);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 37;
-            this.button1.Text = "瀏覽...";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btn_preview.Location = new System.Drawing.Point(452, 577);
+            this.btn_preview.Name = "btn_preview";
+            this.btn_preview.Size = new System.Drawing.Size(75, 23);
+            this.btn_preview.TabIndex = 37;
+            this.btn_preview.Text = "瀏覽...";
+            this.btn_preview.UseVisualStyleBackColor = true;
+            this.btn_preview.Click += new System.EventHandler(this.btn_preview_Click);
             // 
-            // button2
+            // btn_3dm
             // 
-            this.button2.Location = new System.Drawing.Point(450, 615);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 38;
-            this.button2.Text = "瀏覽...";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btn_3dm.Location = new System.Drawing.Point(452, 607);
+            this.btn_3dm.Name = "btn_3dm";
+            this.btn_3dm.Size = new System.Drawing.Size(75, 23);
+            this.btn_3dm.TabIndex = 38;
+            this.btn_3dm.Text = "瀏覽...";
+            this.btn_3dm.UseVisualStyleBackColor = true;
+            this.btn_3dm.Click += new System.EventHandler(this.btn_3dm_Click);
             // 
-            // button3
+            // btn_stlmain
             // 
-            this.button3.Location = new System.Drawing.Point(450, 649);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 39;
-            this.button3.Text = "瀏覽...";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.btn_stlmain.Location = new System.Drawing.Point(450, 649);
+            this.btn_stlmain.Name = "btn_stlmain";
+            this.btn_stlmain.Size = new System.Drawing.Size(75, 23);
+            this.btn_stlmain.TabIndex = 39;
+            this.btn_stlmain.Text = "瀏覽...";
+            this.btn_stlmain.UseVisualStyleBackColor = true;
+            this.btn_stlmain.Click += new System.EventHandler(this.btn_stlmain_Click);
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(123, 677);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.ReadOnly = true;
+            this.textBox2.Size = new System.Drawing.Size(321, 22);
+            this.textBox2.TabIndex = 40;
+            this.textBox2.TabStop = false;
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(123, 707);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.ReadOnly = true;
+            this.textBox4.Size = new System.Drawing.Size(321, 22);
+            this.textBox4.TabIndex = 41;
+            this.textBox4.TabStop = false;
+            // 
+            // btn_stlmainstone
+            // 
+            this.btn_stlmainstone.Location = new System.Drawing.Point(450, 676);
+            this.btn_stlmainstone.Name = "btn_stlmainstone";
+            this.btn_stlmainstone.Size = new System.Drawing.Size(75, 23);
+            this.btn_stlmainstone.TabIndex = 42;
+            this.btn_stlmainstone.Text = "瀏覽...";
+            this.btn_stlmainstone.UseVisualStyleBackColor = true;
+            this.btn_stlmainstone.Click += new System.EventHandler(this.btn_stlmainstone_Click);
+            // 
+            // btn_stlsubstone
+            // 
+            this.btn_stlsubstone.Location = new System.Drawing.Point(450, 707);
+            this.btn_stlsubstone.Name = "btn_stlsubstone";
+            this.btn_stlsubstone.Size = new System.Drawing.Size(75, 23);
+            this.btn_stlsubstone.TabIndex = 43;
+            this.btn_stlsubstone.Text = "瀏覽...";
+            this.btn_stlsubstone.UseVisualStyleBackColor = true;
+            this.btn_stlsubstone.Click += new System.EventHandler(this.btn_stlsubstone_Click);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label11.Location = new System.Drawing.Point(20, 683);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(86, 16);
+            this.label11.TabIndex = 44;
+            this.label11.Text = "stl主石模型";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label12.Location = new System.Drawing.Point(20, 709);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(86, 16);
+            this.label12.TabIndex = 45;
+            this.label12.Text = "stl小鑽模型";
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1229, 723);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(1229, 741);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.btn_stlsubstone);
+            this.Controls.Add(this.btn_stlmainstone);
+            this.Controls.Add(this.textBox4);
+            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.btn_stlmain);
+            this.Controls.Add(this.btn_3dm);
+            this.Controls.Add(this.btn_preview);
             this.Controls.Add(this.txtB_stl);
             this.Controls.Add(this.txtB_3dm);
             this.Controls.Add(this.txtB_preimage);
@@ -467,8 +536,14 @@
         private System.Windows.Forms.TextBox txtB_preimage;
         private System.Windows.Forms.TextBox txtB_3dm;
         private System.Windows.Forms.TextBox txtB_stl;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button btn_preview;
+        private System.Windows.Forms.Button btn_3dm;
+        private System.Windows.Forms.Button btn_stlmain;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.Button btn_stlmainstone;
+        private System.Windows.Forms.Button btn_stlsubstone;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
     }
 }
