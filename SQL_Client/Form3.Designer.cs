@@ -74,7 +74,6 @@
             this.btn_cancel.TabIndex = 4;
             this.btn_cancel.Text = "取消";
             this.btn_cancel.UseVisualStyleBackColor = true;
-            this.btn_cancel.Click += new System.EventHandler(this.btn_cancel_Click);
             // 
             // listBox2
             // 

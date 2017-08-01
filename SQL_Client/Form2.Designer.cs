@@ -30,7 +30,6 @@
         {
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.imgBox = new System.Windows.Forms.PictureBox();
             this.label5 = new System.Windows.Forms.Label();
             this.id = new System.Windows.Forms.TextBox();
             this.modelID = new System.Windows.Forms.TextBox();
@@ -62,11 +61,10 @@
             this.btn_3dm = new System.Windows.Forms.Button();
             this.btn_stlmain = new System.Windows.Forms.Button();
             this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
             this.btn_stlmainstone = new System.Windows.Forms.Button();
-            this.btn_stlsubstone = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
+            this.btn_morestones = new System.Windows.Forms.Button();
+            this.imgBox = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.imgBox)).BeginInit();
             this.SuspendLayout();
             // 
@@ -87,17 +85,6 @@
             this.label1.Size = new System.Drawing.Size(60, 12);
             this.label1.TabIndex = 16;
             this.label1.Text = "ACCOUNT";
-            // 
-            // imgBox
-            // 
-            this.imgBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.imgBox.Cursor = System.Windows.Forms.Cursors.No;
-            this.imgBox.Location = new System.Drawing.Point(35, 75);
-            this.imgBox.Name = "imgBox";
-            this.imgBox.Size = new System.Drawing.Size(538, 374);
-            this.imgBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.imgBox.TabIndex = 5;
-            this.imgBox.TabStop = false;
             // 
             // label5
             // 
@@ -130,7 +117,7 @@
             // GetNext
             // 
             this.GetNext.Font = new System.Drawing.Font("PMingLiU", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.GetNext.Location = new System.Drawing.Point(1012, 666);
+            this.GetNext.Location = new System.Drawing.Point(1012, 649);
             this.GetNext.Name = "GetNext";
             this.GetNext.Size = new System.Drawing.Size(185, 59);
             this.GetNext.TabIndex = 8;
@@ -237,7 +224,7 @@
             // btn_stone
             // 
             this.btn_stone.Font = new System.Drawing.Font("Arial Narrow", 24F);
-            this.btn_stone.Location = new System.Drawing.Point(646, 375);
+            this.btn_stone.Location = new System.Drawing.Point(646, 364);
             this.btn_stone.Name = "btn_stone";
             this.btn_stone.Size = new System.Drawing.Size(257, 85);
             this.btn_stone.TabIndex = 5;
@@ -266,7 +253,7 @@
             // Upload
             // 
             this.Upload.Font = new System.Drawing.Font("PMingLiU", 15.75F);
-            this.Upload.Location = new System.Drawing.Point(835, 666);
+            this.Upload.Location = new System.Drawing.Point(835, 649);
             this.Upload.Name = "Upload";
             this.Upload.Size = new System.Drawing.Size(171, 59);
             this.Upload.TabIndex = 7;
@@ -291,7 +278,7 @@
             this.status.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.status.BackColor = System.Drawing.Color.Cornsilk;
             this.status.Font = new System.Drawing.Font("PMingLiU", 21.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.status.Location = new System.Drawing.Point(1055, 21);
+            this.status.Location = new System.Drawing.Point(1055, 13);
             this.status.Name = "status";
             this.status.Size = new System.Drawing.Size(110, 42);
             this.status.TabIndex = 29;
@@ -299,7 +286,7 @@
             // btn_pre
             // 
             this.btn_pre.Font = new System.Drawing.Font("PMingLiU", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.btn_pre.Location = new System.Drawing.Point(644, 666);
+            this.btn_pre.Location = new System.Drawing.Point(644, 649);
             this.btn_pre.Name = "btn_pre";
             this.btn_pre.Size = new System.Drawing.Size(185, 59);
             this.btn_pre.TabIndex = 30;
@@ -403,15 +390,6 @@
             this.textBox2.TabIndex = 40;
             this.textBox2.TabStop = false;
             // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(123, 707);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.ReadOnly = true;
-            this.textBox4.Size = new System.Drawing.Size(321, 22);
-            this.textBox4.TabIndex = 41;
-            this.textBox4.TabStop = false;
-            // 
             // btn_stlmainstone
             // 
             this.btn_stlmainstone.Location = new System.Drawing.Point(450, 676);
@@ -421,16 +399,6 @@
             this.btn_stlmainstone.Text = "瀏覽...";
             this.btn_stlmainstone.UseVisualStyleBackColor = true;
             this.btn_stlmainstone.Click += new System.EventHandler(this.btn_stlmainstone_Click);
-            // 
-            // btn_stlsubstone
-            // 
-            this.btn_stlsubstone.Location = new System.Drawing.Point(450, 707);
-            this.btn_stlsubstone.Name = "btn_stlsubstone";
-            this.btn_stlsubstone.Size = new System.Drawing.Size(75, 23);
-            this.btn_stlsubstone.TabIndex = 43;
-            this.btn_stlsubstone.Text = "瀏覽...";
-            this.btn_stlsubstone.UseVisualStyleBackColor = true;
-            this.btn_stlsubstone.Click += new System.EventHandler(this.btn_stlsubstone_Click);
             // 
             // label11
             // 
@@ -442,26 +410,35 @@
             this.label11.TabIndex = 44;
             this.label11.Text = "stl主石模型";
             // 
-            // label12
+            // btn_morestones
             // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label12.Location = new System.Drawing.Point(20, 709);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(86, 16);
-            this.label12.TabIndex = 45;
-            this.label12.Text = "stl小鑽模型";
+            this.btn_morestones.Location = new System.Drawing.Point(531, 677);
+            this.btn_morestones.Name = "btn_morestones";
+            this.btn_morestones.Size = new System.Drawing.Size(84, 23);
+            this.btn_morestones.TabIndex = 45;
+            this.btn_morestones.Text = "加入副石...";
+            this.btn_morestones.UseVisualStyleBackColor = true;
+            this.btn_morestones.Click += new System.EventHandler(this.btn_morestones_Click);
+            // 
+            // imgBox
+            // 
+            this.imgBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.imgBox.Cursor = System.Windows.Forms.Cursors.No;
+            this.imgBox.Location = new System.Drawing.Point(35, 75);
+            this.imgBox.Name = "imgBox";
+            this.imgBox.Size = new System.Drawing.Size(538, 374);
+            this.imgBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.imgBox.TabIndex = 5;
+            this.imgBox.TabStop = false;
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1229, 741);
-            this.Controls.Add(this.label12);
+            this.ClientSize = new System.Drawing.Size(1229, 724);
+            this.Controls.Add(this.btn_morestones);
             this.Controls.Add(this.label11);
-            this.Controls.Add(this.btn_stlsubstone);
             this.Controls.Add(this.btn_stlmainstone);
-            this.Controls.Add(this.textBox4);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.btn_stlmain);
             this.Controls.Add(this.btn_3dm);
@@ -540,10 +517,8 @@
         private System.Windows.Forms.Button btn_3dm;
         private System.Windows.Forms.Button btn_stlmain;
         private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox4;
         private System.Windows.Forms.Button btn_stlmainstone;
-        private System.Windows.Forms.Button btn_stlsubstone;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Button btn_morestones;
     }
 }

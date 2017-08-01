@@ -165,11 +165,7 @@ namespace SQL_Client
             }
         }
 
-        private void btn_cancel_Click(object sender, EventArgs e)
-        {
-            this.Close();
-            DialogResult = DialogResult.Cancel;
-        }
+  
 
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)

@@ -70,7 +70,7 @@ namespace SQL_Client
 
             //initial sql
             sql = new SQL_Util();
-            sql.IP = "118.170.189.76";
+            sql.IP = "127.0.0.1";
             sql.userAccount = "shooter";//account;
             sql.userPwd = "11111111";//password;
             sql.database = "sys";
@@ -528,6 +528,11 @@ namespace SQL_Client
         }
         private void btn_pre_Click(object sender, EventArgs e)
         {
+            if (current_model == null)
+            {
+                MessageBox.Show("請載入資料");
+                return;
+            }
             if (current_pos >= 2)
             {
                 current_pos -= 2;
@@ -541,6 +546,11 @@ namespace SQL_Client
 
         private void btn_preview_Click(object sender, EventArgs e)
         {
+            if (current_model == null)
+            {
+                MessageBox.Show("請載入資料");
+                return;
+            }
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             //如果存在模型資料夾 開啟資料夾為預設位置
             if(Directory.Exists(dir_path + @"\" + current_model.modelID)){
@@ -559,6 +569,11 @@ namespace SQL_Client
         }
         private void btn_3dm_Click(object sender, EventArgs e)
         {
+            if (current_model == null)
+            {
+                MessageBox.Show("請載入資料");
+                return;
+            }
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             if (Directory.Exists(dir_path + @"\" + current_model.modelID))
             {
@@ -575,6 +590,11 @@ namespace SQL_Client
         }
         private void btn_stlmain_Click(object sender, EventArgs e)
         {
+            if (current_model == null)
+            {
+                MessageBox.Show("請載入資料");
+                return;
+            }
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             if (Directory.Exists(dir_path + @"\" + current_model.modelID))
             {
@@ -591,6 +611,11 @@ namespace SQL_Client
         }
         private void btn_stlmainstone_Click(object sender, EventArgs e)
         {
+            if (current_model == null)
+            {
+                MessageBox.Show("請載入資料");
+                return;
+            }
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             if (Directory.Exists(dir_path + @"\" + current_model.modelID))
             {
@@ -607,6 +632,11 @@ namespace SQL_Client
         }
         private void btn_stlsubstone_Click(object sender, EventArgs e)
         {
+            if (current_model == null)
+            {
+                MessageBox.Show("請載入資料");
+                return;
+            }
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             if (Directory.Exists(dir_path + @"\" + current_model.modelID))
             {
@@ -633,6 +663,25 @@ namespace SQL_Client
             long numBytes = new FileInfo(fileName).Length;
             buff = br.ReadBytes((int)numBytes);
             return buff;
+        }
+
+        private void btn_morestones_Click(object sender, EventArgs e)
+        {
+            if (current_model == null)
+            {
+                MessageBox.Show("請載入資料");
+                return;
+            }
+            Form4 substoneForm = new Form4();
+            if (substoneForm.ShowDialog() == DialogResult.OK)
+            {
+                substoneForm.Close();
+                return;
+            }
+            else
+            {
+
+            }
         }
 
 

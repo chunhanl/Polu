@@ -393,7 +393,7 @@ namespace SQL_Client
         }
     }
 
-    class SQL_Structure
+    public class SQL_Structure
     {
         //data member
         public string id { get; set; }
@@ -403,7 +403,9 @@ namespace SQL_Client
         public enum Manufacture { taiwan, china, notgiven };
         public enum Stone { diamond, jade, redblue, pearl, other, none };
         public enum StoneShape {none, drop, heart, circle, oval, rect, eye, god, other};
+
         public enum Stl {main, mainstone, substone };
+        public enum StlMaterial { diamond, jade, redblue, pearl, gold, plat, rose};
 
         public string gender { get; set; }
         public string category { get; set; }
