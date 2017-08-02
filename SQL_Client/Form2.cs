@@ -20,17 +20,16 @@ namespace SQL_Client
         private string path_img = "";
         private string path_stl_main = "";
         private string path_stl_mainstone = "";
-        private string path_stl_substone = "";
         private string path_3dm = "";
         private bool isImgNeedUpdate = false;
         private bool isStlMainNeedUpdate =false;
         private bool isStlMainStoneNeedUpdate = false;
-        private bool isStlSubStone1NeedUpdate = false;
+        private bool isStlSubStonesNeedUpdate = false;
         private bool is3dmNeedUpdate =false;
+        private bool[] isStlModified;
         IEnumerable<string> model_dirs;
 
         private int current_pos = 0;
-
         //data member
         private string account;
         private string password;
@@ -70,8 +69,8 @@ namespace SQL_Client
 
             //initial sql
             sql = new SQL_Util();
-            sql.IP = "127.0.0.1";
-            sql.userAccount = "shooter";//account;
+            sql.IP = "127.0.0.1";//"118.170.189.76";
+            sql.userAccount = "root";//account;
             sql.userPwd = "11111111";//password;
             sql.database = "sys";
 
@@ -138,6 +137,21 @@ namespace SQL_Client
                 current_model.work_cost = d;
             }
             current_model.comment = textB_comment.Text;
+
+            if( current_model.stone=="none" && current_model.substoneMaterials[0] != "none")
+            {
+                MessageBox.Show(current_model.stone + current_model.substoneMaterials[0]);
+                isStlSubStonesNeedUpdate = false;
+                for (int i = 0; i < 5; i++)
+                {
+                    current_model.substoneMaterials[i] = "none";
+                    current_model.modelstl_substone[i] = null;
+                }
+                MessageBox.Show("請先用主石模型欄位，再用副石模型欄位");
+                return false;
+            }
+
+
             return true;
         }
 
@@ -194,20 +208,18 @@ namespace SQL_Client
                     return false;
                 }
             }
-            if (isStlSubStone1NeedUpdate)
+
+            if (isStlSubStonesNeedUpdate)
             {
-                current_model.modelstl_substone = FileToByteArray(path_stl_substone);
-                if (current_model.modelstl_substone != null)
+                for(int i = 0; i < 5; i++)
                 {
-                    sql.updateStl(current_model.modelstl_substone, int.Parse(current_model.id), SQL_Structure.Stl.substone);
-                }
-                else
-                {
-                    MessageBox.Show("無stl副石圖");
-                    return false;
+                    if(isStlModified[i])
+                    {
+                        sql.updateStl(current_model.modelstl_substone[i], current_model.substoneMaterials[i], int.Parse(current_model.id), i);
+                    }
                 }
             }
-
+            
             return true;
         }
 
@@ -278,9 +290,10 @@ namespace SQL_Client
                     string ImportModelID = path_tmp.Substring(dir_path.Length + 1);
                     isStlMainNeedUpdate = false;
                     isStlMainStoneNeedUpdate = false;
-                    isStlSubStone1NeedUpdate = false;
+                    isStlSubStonesNeedUpdate = false;
                     is3dmNeedUpdate = false;
                     isImgNeedUpdate = false;
+                    isStlModified = new bool[5] { false,false,false,false,false};
 
                     if (!sql.isModelidExist(ImportModelID))
                     {
@@ -555,6 +568,7 @@ namespace SQL_Client
             //如果存在模型資料夾 開啟資料夾為預設位置
             if(Directory.Exists(dir_path + @"\" + current_model.modelID)){
                 openFileDialog1.InitialDirectory = dir_path + @"\" + current_model.modelID;
+                openFileDialog1.Filter = "JPG files| *.jpg";
             }
             DialogResult result = openFileDialog1.ShowDialog(); // Show the dialog.
             if (result == DialogResult.OK) // Test result.
@@ -578,6 +592,7 @@ namespace SQL_Client
             if (Directory.Exists(dir_path + @"\" + current_model.modelID))
             {
                 openFileDialog1.InitialDirectory = dir_path + @"\" + current_model.modelID;
+                openFileDialog1.Filter = "3dm files| *.3dm";
             }
             DialogResult result = openFileDialog1.ShowDialog(); // Show the dialog.
             if (result == DialogResult.OK) // Test result.
@@ -599,6 +614,7 @@ namespace SQL_Client
             if (Directory.Exists(dir_path + @"\" + current_model.modelID))
             {
                 openFileDialog1.InitialDirectory = dir_path + @"\" + current_model.modelID;
+                openFileDialog1.Filter = "Stl files| *.stl";
             }
             DialogResult result = openFileDialog1.ShowDialog(); // Show the dialog.
             if (result == DialogResult.OK) // Test result.
@@ -620,38 +636,18 @@ namespace SQL_Client
             if (Directory.Exists(dir_path + @"\" + current_model.modelID))
             {
                 openFileDialog1.InitialDirectory = dir_path + @"\" + current_model.modelID;
+                openFileDialog1.Filter = "Stl files| *.stl";
             }
             DialogResult result = openFileDialog1.ShowDialog(); // Show the dialog.
             if (result == DialogResult.OK) // Test result.
             {
                 path_stl_mainstone = openFileDialog1.FileName;
-                this.txtB_stl.Text = path_stl_mainstone;
+                this.textBox2.Text = path_stl_mainstone;
                 isStlMainStoneNeedUpdate = true;
             }
             openFileDialog1.Dispose();
         }
-        private void btn_stlsubstone_Click(object sender, EventArgs e)
-        {
-            if (current_model == null)
-            {
-                MessageBox.Show("請載入資料");
-                return;
-            }
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            if (Directory.Exists(dir_path + @"\" + current_model.modelID))
-            {
-                openFileDialog1.InitialDirectory = dir_path + @"\" + current_model.modelID;
-            }
-            DialogResult result = openFileDialog1.ShowDialog(); // Show the dialog.
-            if (result == DialogResult.OK) // Test result.
-            {
-                path_stl_substone = openFileDialog1.FileName;
-                this.txtB_stl.Text = path_stl_substone;
-                isStlSubStone1NeedUpdate = true;
-            }
-            openFileDialog1.Dispose();
-        }
-
+      
 
         private byte[] FileToByteArray(string fileName)
         {
@@ -672,15 +668,25 @@ namespace SQL_Client
                 MessageBox.Show("請載入資料");
                 return;
             }
-            Form4 substoneForm = new Form4();
+            Form4 substoneForm = new Form4( current_model );
+            substoneForm.default_folder_path = dir_path + @"\" + current_model.modelID;
+
             if (substoneForm.ShowDialog() == DialogResult.OK)
             {
+                isStlSubStonesNeedUpdate = substoneForm.isModified;
+                if (isStlSubStonesNeedUpdate)
+                {
+                    Array.Copy(substoneForm.isEachModified, this.isStlModified, 5);
+                    Array.Copy(current_model.substoneMaterials , substoneForm.material , 5);
+                    Array.Copy(current_model.modelstl_substone, substoneForm.stl, 5);
+
+                }
                 substoneForm.Close();
                 return;
             }
             else
             {
-
+                substoneForm.Close();
             }
         }
 

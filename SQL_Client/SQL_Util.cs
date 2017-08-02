@@ -243,6 +243,51 @@ namespace SQL_Client
             return true;
         }
 
+
+        public bool updateStl(byte[] arr, string material, int id, int subseq)
+        {
+            /*!!!!!  if materials == none  => set null
+
+
+         /*   conn.Open();
+            MySqlCommand cmd = conn.CreateCommand();
+
+            try
+            {
+                cmd.CommandText = "INSERT INTO `sys`.`model_table` (`parent_id`) VALUES( " + id.ToString() + ")";
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("資料庫出問題，請洽苦命的工程師 ErrorA01");
+            }
+
+            switch (option)
+            {
+                case SQL_Structure.Stl.main:
+                    cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl="
+                                            + "@stl" + " where parent_id=" + id.ToString();
+                    break;
+                case SQL_Structure.Stl.mainstone:
+                    cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_mainstone="
+                                        + "@stl" + " where parent_id=" + id.ToString();
+                    break;
+                case SQL_Structure.Stl.substone:
+                    cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_substone="
+                                        + "@stl" + " where parent_id=" + id.ToString();
+                    break;
+                default:
+                    conn.Close();
+                    return false;
+            }
+            cmd.Parameters.Add("@stl", MySqlDbType.MediumBlob);
+            cmd.Parameters["@stl"].Value = arr;
+            cmd.ExecuteNonQuery();
+
+            conn.Close();*/
+            return true;
+        }
+
         public bool update3dm(string arr, int id)
         {
             conn.Open();
@@ -342,7 +387,7 @@ namespace SQL_Client
                 adapter.Dispose();
                 t.Dispose();
             }
-
+            //!!!!!@!@!!@@!@ remember to load substone
 
             conn.Close();
             return sql_struct;
@@ -405,7 +450,7 @@ namespace SQL_Client
         public enum StoneShape {none, drop, heart, circle, oval, rect, eye, god, other};
 
         public enum Stl {main, mainstone, substone };
-        public enum StlMaterial { diamond, jade, redblue, pearl, gold, plat, rose};
+        public enum StlMaterial {none, diamond, jade, redblue, pearl, gold, plat, rose};
 
         public string gender { get; set; }
         public string category { get; set; }
@@ -421,9 +466,12 @@ namespace SQL_Client
 
         public Image preview_image;
         public string model3dm;
+        public int numofStl;
+
         public byte[] modelstl_main;
         public byte[] modelstl_mainstone;
-        public byte[] modelstl_substone;
+        public byte[][] modelstl_substone;
+        public string[] substoneMaterials;
 
 
         public SQL_Structure()
@@ -434,6 +482,9 @@ namespace SQL_Client
             this.weight = 0;
             this.work_cost = 0;
             this.isExistInDB = false;
+            this.numofStl = 0;
+            this.modelstl_substone = new byte[5][];
+            this.substoneMaterials = new string[5];
         }
 
     }

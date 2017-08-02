@@ -210,5 +210,10 @@ namespace SQL_Client
                 "其他"});
             }
         }
+
+        private void btn_cancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+        }
     }
 }
