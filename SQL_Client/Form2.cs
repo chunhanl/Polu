@@ -17,6 +17,15 @@ namespace SQL_Client
     {
         //temp
         private string dir_path = @"D:\Polu_DB\Models";
+        IEnumerable<string> model_dirs;
+        private int current_pos = 0;
+
+        //data member
+        private string account;
+        private string password;
+        private SQL_Util sql;
+
+        private SQL_Structure current_model;
         private string path_img = "";
         private string path_stl_main = "";
         private string path_stl_mainstone = "";
@@ -27,18 +36,11 @@ namespace SQL_Client
         private bool isStlSubStonesNeedUpdate = false;
         private bool is3dmNeedUpdate =false;
         private bool[] isStlModified;
-        IEnumerable<string> model_dirs;
-
-        private int current_pos = 0;
-        //data member
-        private string account;
-        private string password;
-        private SQL_Util sql;
-        private SQL_Structure current_model;
-
-        
+                
         private Form3 stoneform;
         private bool stoneInfoUpdate = false;
+
+
 
         //constructor
         public Form2()
@@ -102,6 +104,20 @@ namespace SQL_Client
             this.Close();
         }
 
+        private void ResetLocalVariables()
+        {
+            path_img = "";
+            path_stl_main = "";
+            path_stl_mainstone = "";
+            path_3dm = "";
+            isImgNeedUpdate = false;
+            isStlMainNeedUpdate = false;
+            isStlMainStoneNeedUpdate = false;
+            isStlSubStonesNeedUpdate = false;
+            is3dmNeedUpdate = false;
+            isStlModified = new bool[5] { false, false, false, false, false };
+            stoneInfoUpdate = false;
+        }
         private bool readSelectedIntoModel()
         {
             if (list_category.SelectedIndex != -1 && list_gender.SelectedIndex != -1 && list_manufact.SelectedIndex != -1)
@@ -138,20 +154,6 @@ namespace SQL_Client
             }
             current_model.comment = textB_comment.Text;
 
-            if( current_model.stone=="none" && current_model.substoneMaterials[0] != "none")
-            {
-                MessageBox.Show(current_model.stone + current_model.substoneMaterials[0]);
-                isStlSubStonesNeedUpdate = false;
-                for (int i = 0; i < 5; i++)
-                {
-                    current_model.substoneMaterials[i] = "none";
-                    current_model.modelstl_substone[i] = null;
-                }
-                MessageBox.Show("請先用主石模型欄位，再用副石模型欄位");
-                return false;
-            }
-
-
             return true;
         }
 
@@ -187,26 +189,31 @@ namespace SQL_Client
                 current_model.modelstl_main = FileToByteArray(path_stl_main);
                 if (current_model.modelstl_main != null)
                 {
-                    sql.updateStl(current_model.modelstl_main, int.Parse(current_model.id), SQL_Structure.Stl.main);
+                    current_model.mainMaterial = Enum.GetName(typeof(SQL_Structure.StlMaterial), SQL_Structure.StlMaterial.pt);
+                    sql.updateStl(current_model.modelstl_main, int.Parse(current_model.id), current_model.mainMaterial, SQL_Structure.Stl.main);
                 }
                 else
                 {
-                    MessageBox.Show("無stl圖");
+                    MessageBox.Show("無主要stl圖");
                     return false;
                 }
             }
             if (isStlMainStoneNeedUpdate)
             {
-                current_model.modelstl_mainstone = FileToByteArray(path_stl_mainstone);
-                if (current_model.modelstl_mainstone != null)
+                if (current_model.stone == "none" && String.Equals(path_stl_mainstone, String.Empty) == false)
                 {
-                    sql.updateStl(current_model.modelstl_mainstone, int.Parse(current_model.id), SQL_Structure.Stl.mainstone);
-                }
-                else
-                {
-                    MessageBox.Show("無stl主石圖");
+                    MessageBox.Show("Stl主石圖未選擇石頭類型");
                     return false;
                 }
+                else if (current_model.stone != "none" && String.Equals(path_stl_mainstone, String.Empty) != false) 
+                {
+                    MessageBox.Show("選擇為 有主石，但無stl圖，請補足");
+                    return false;
+                }
+
+                current_model.modelstl_mainstone = FileToByteArray(path_stl_mainstone);
+                sql.updateStl(current_model.modelstl_mainstone, int.Parse(current_model.id), current_model.stone, SQL_Structure.Stl.mainstone);
+                
             }
 
             if (isStlSubStonesNeedUpdate)
@@ -215,7 +222,8 @@ namespace SQL_Client
                 {
                     if(isStlModified[i])
                     {
-                        sql.updateStl(current_model.modelstl_substone[i], current_model.substoneMaterials[i], int.Parse(current_model.id), i);
+                        SQL_Structure.Stl s = (SQL_Structure.Stl)Enum.Parse( typeof(SQL_Structure.Stl),  Enum.GetName(typeof(SQL_Structure.Stl), i + 2) );
+                        sql.updateStl(current_model.modelstl_substone[i], int.Parse(current_model.id), current_model.substoneMaterials[i], s );
                     }
                 }
             }
@@ -234,8 +242,8 @@ namespace SQL_Client
             if (sql.checkConnection())
             {
                 if (current_model.isExistInDB)
-                {                
-                    if( readSelectedIntoModel() == false)
+                {
+                    if ( readSelectedIntoModel() == false)
                     {
                         //資料未輸入完全
                         return; 
@@ -258,8 +266,6 @@ namespace SQL_Client
                         //資料未輸入完全
                         return;
                     }
-                                        
-                    checkFilesAndUpdate();
                     this.status.BackColor = Color.Red;
                     this.status.Text = "入庫中";
                     this.Refresh();
@@ -281,7 +287,8 @@ namespace SQL_Client
 
          
         private void GetNext_Click(object sender, EventArgs e)
-        {            
+        {
+            ResetLocalVariables();
             if (sql.checkConnection() )
             {
                 try
@@ -309,6 +316,7 @@ namespace SQL_Client
                         this.list_manufact.ClearSelected();
                         stoneInfoRefresh();
                         this.textB_comment.Text = "";
+                        this.txtB_mainstone.Text = "";
                         this.status.BackColor = Color.Yellow;
                         this.status.Text = "未入庫";
                         this.txt_LMT.Text = "未入庫";
@@ -335,7 +343,6 @@ namespace SQL_Client
                             catch (Exception)
                             {
                                 img_tmp = null;
-                                setImgBox(null);
                                 path_img = "無預覽圖";
                                 this.txtB_preimage.Text = path_img;
                             }
@@ -381,52 +388,60 @@ namespace SQL_Client
                         this.status.BackColor = Color.YellowGreen;
                         this.status.Text = "已入庫";
                         this.txt_LMT.Text = current_model.LMT;
-
-                        //MessageBox.Show(current_model.modelID + " is not new");
-                        try
+                        
+                        if (current_model.preview_image != null)
                         {
-                            if (current_model.preview_image != null)
-                            {
-                                setImgBox(current_model.preview_image);
-                                path_img = current_model.preview_image.ToString();
-                                this.txtB_preimage.Text = "資料庫";
-                            }
-                            else
-                            {
-                                Image img_tmp = Image.FromFile(path_tmp + @"\" + path_tmp.Substring(dir_path.Length + 1) + ".jpg");
-                                setImgBox(img_tmp);
-                                current_model.preview_image = img_tmp;
-                                path_img  = path_tmp + @"\" + path_tmp.Substring(dir_path.Length + 1) + ".jpg";
-                                this.txtB_preimage.Text = path_img;
-                                isImgNeedUpdate = true;
-                            }
+                            setImgBox(current_model.preview_image);
+                            path_img = current_model.preview_image.ToString();
+                            this.txtB_preimage.Text = "資料庫";
                         }
-                        catch (Exception)
+                        else
                         {
+                            Image img_tmp;
                             try
-                            {
-                                IEnumerable<string> files = Directory.GetFiles(path_tmp, "*.jpg", SearchOption.TopDirectoryOnly);
-                                Image img_tmp = Image.FromFile(files.ElementAt<string>(0));
-                                setImgBox(img_tmp);
-                                current_model.preview_image = img_tmp;
-                                path_img = files.ElementAt<string>(0);
-                                this.txtB_preimage.Text = path_img;
-                                isImgNeedUpdate = true;
+                            {                               
+                                 img_tmp = Image.FromFile(path_tmp + @"\" + path_tmp.Substring(dir_path.Length + 1) + ".jpg");
+                                 current_model.preview_image = img_tmp;
+                                 path_img = path_tmp + @"\" + path_tmp.Substring(dir_path.Length + 1) + ".jpg";
+                                 this.txtB_preimage.Text = path_img;
+                                 isImgNeedUpdate = true;
+                                
                             }
                             catch (Exception)
                             {
-                                setImgBox(null);
-                                path_img = "無預覽圖";
-                                this.txtB_preimage.Text = path_img;
+                                try
+                                {
+                                    IEnumerable<string> files = Directory.GetFiles(path_tmp, "*.jpg", SearchOption.TopDirectoryOnly);
+                                    img_tmp = Image.FromFile(files.ElementAt<string>(0));
+                                    current_model.preview_image = img_tmp;
+                                    path_img = files.ElementAt<string>(0);
+                                    this.txtB_preimage.Text = path_img;
+                                    isImgNeedUpdate = true;
+                                }
+                                catch (Exception)
+                                {
+                                    img_tmp = null;
+                                    path_img = "無預覽圖";
+                                    this.txtB_preimage.Text = path_img;
+                                }
                             }
+
+                            setImgBox(img_tmp);
+                            current_model.preview_image = img_tmp;
+                            this.txtB_preimage.Text = path_img;
                         }
 
                         //GET 3dm stl from D:\ .....
+
+                        if (current_model.stone != Enum.GetName(typeof(SQL_Structure.Stone), SQL_Structure.Stone.none)) {
+                            this.txtB_mainstone.Text = "資料庫";
+                        }
+                        else
+                        {
+                            this.txtB_mainstone.Text = "";                           
+                        }
                         this.txtB_3dm.Text = "資料庫";
                         this.txtB_stl.Text = "資料庫";
-
-
-
 
                     }
                     current_pos++;
@@ -533,6 +548,10 @@ namespace SQL_Client
             if (stoneInfoUpdate)
             {
                 current_model.stone = Enum.GetName(typeof(SQL_Structure.Stone) ,stoneform.selected_1);
+                if(current_model.stone== Enum.GetName(typeof(SQL_Structure.Stone), SQL_Structure.Stone.none))
+                {
+                    this.txtB_mainstone.Text = "";// Clear path of main stone if none selected
+                }
                 current_model.stone_shape = stoneform.shape;
                 current_model.stone_size = stoneform.size;
             }
@@ -642,7 +661,7 @@ namespace SQL_Client
             if (result == DialogResult.OK) // Test result.
             {
                 path_stl_mainstone = openFileDialog1.FileName;
-                this.textBox2.Text = path_stl_mainstone;
+                this.txtB_mainstone.Text = path_stl_mainstone;
                 isStlMainStoneNeedUpdate = true;
             }
             openFileDialog1.Dispose();
@@ -670,16 +689,14 @@ namespace SQL_Client
             }
             Form4 substoneForm = new Form4( current_model );
             substoneForm.default_folder_path = dir_path + @"\" + current_model.modelID;
-
             if (substoneForm.ShowDialog() == DialogResult.OK)
             {
                 isStlSubStonesNeedUpdate = substoneForm.isModified;
                 if (isStlSubStonesNeedUpdate)
                 {
                     Array.Copy(substoneForm.isEachModified, this.isStlModified, 5);
-                    Array.Copy(current_model.substoneMaterials , substoneForm.material , 5);
-                    Array.Copy(current_model.modelstl_substone, substoneForm.stl, 5);
-
+                    Array.Copy(substoneForm.material, current_model.substoneMaterials ,  5);
+                    Array.Copy(substoneForm.stl, current_model.modelstl_substone, 5);
                 }
                 substoneForm.Close();
                 return;
@@ -690,6 +707,10 @@ namespace SQL_Client
             }
         }
 
+        private void FormReset()
+        {
+
+        }
 
 
 

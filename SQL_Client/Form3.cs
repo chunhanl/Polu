@@ -170,7 +170,6 @@ namespace SQL_Client
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
             listBox2.SelectedIndex = -1;
             listBox3.SelectedIndex = -1;
 

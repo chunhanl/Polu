@@ -60,7 +60,7 @@
             this.btn_preview = new System.Windows.Forms.Button();
             this.btn_3dm = new System.Windows.Forms.Button();
             this.btn_stlmain = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.txtB_mainstone = new System.Windows.Forms.TextBox();
             this.btn_stlmainstone = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
             this.btn_morestones = new System.Windows.Forms.Button();
@@ -381,14 +381,14 @@
             this.btn_stlmain.UseVisualStyleBackColor = true;
             this.btn_stlmain.Click += new System.EventHandler(this.btn_stlmain_Click);
             // 
-            // textBox2
+            // txtB_mainstone
             // 
-            this.textBox2.Location = new System.Drawing.Point(123, 677);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(321, 22);
-            this.textBox2.TabIndex = 40;
-            this.textBox2.TabStop = false;
+            this.txtB_mainstone.Location = new System.Drawing.Point(123, 677);
+            this.txtB_mainstone.Name = "txtB_mainstone";
+            this.txtB_mainstone.ReadOnly = true;
+            this.txtB_mainstone.Size = new System.Drawing.Size(321, 22);
+            this.txtB_mainstone.TabIndex = 40;
+            this.txtB_mainstone.TabStop = false;
             // 
             // btn_stlmainstone
             // 
@@ -439,7 +439,7 @@
             this.Controls.Add(this.btn_morestones);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.btn_stlmainstone);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.txtB_mainstone);
             this.Controls.Add(this.btn_stlmain);
             this.Controls.Add(this.btn_3dm);
             this.Controls.Add(this.btn_preview);
@@ -516,7 +516,7 @@
         private System.Windows.Forms.Button btn_preview;
         private System.Windows.Forms.Button btn_3dm;
         private System.Windows.Forms.Button btn_stlmain;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox txtB_mainstone;
         private System.Windows.Forms.Button btn_stlmainstone;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Button btn_morestones;

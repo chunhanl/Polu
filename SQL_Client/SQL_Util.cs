@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using System.IO;
 using MySql.Data.MySqlClient;
 using System.Data;
-
+using System.Diagnostics;
 
 namespace SQL_Client
 {
@@ -97,8 +97,7 @@ namespace SQL_Client
         }
 
         public void Insert(SQL_Structure ss)
-        {
-            
+        {  
             //INSERT INTO `sys`.`main_table` (`model_id`, `category`, `weight`, `work_cost`, `producer`, `gender`, `stone`, `last_modified_time`, `last_modified_user`) VALUES('123456', 'earring', '50', '545', 'china', 'both', 'diamond', '2017/07/17 12:31:52', 'root');
             conn.Open();
             command.CommandText = "insert into " + database + "." + table 
@@ -112,7 +111,6 @@ namespace SQL_Client
             string id = reader.GetString(0);
             reader.Dispose();
             ss.id = id;
-
             if (ss.stone != "none")
             {                
                 //INSERT INTO `sys`.`stone_table` (`local_id`, `model_id`, `shape`, `size`) VALUES(65536, 32, 'oval', 'less30');
@@ -173,38 +171,26 @@ namespace SQL_Client
         {
             conn.Open();
             MySqlCommand cmd = conn.CreateCommand();
+
+            //Update image
             byte[] arr = ImageToBlob(img);
             cmd.CommandText = "update " + table + " set design_img=" + "@img" + " where id=" + id.ToString();
             cmd.Parameters.Add("@img", MySqlDbType.MediumBlob);
             cmd.Parameters["@img"].Value = arr;
-
-            if(cmd.ExecuteNonQuery() == 1)
-            {
-                //MessageBox.Show("Data replaced");
-            }
-            else
-            {
-                //MessageBox.Show("Data not replaced");
-            }
-            
+            cmd.ExecuteNonQuery();
+            //Update icon
             cmd.CommandText = "update " + table + " set design_img_icon=" + "@img2" + " where id=" + id.ToString();
             cmd.Parameters.Add("@img2", MySqlDbType.MediumBlob);
             cmd.Parameters["@img2"].Value = arr;
-            if (cmd.ExecuteNonQuery() == 1)
-            {
-                //MessageBox.Show("Data replaced");
-            }
-            else
-            {
-                //MessageBox.Show("Data not replaced");
-            }
-            
+            cmd.ExecuteNonQuery();
+
+
             conn.Close();
             return true;
         }
 
 
-        public bool updateStl(byte[] arr, int id, SQL_Structure.Stl option)
+        public bool updateStl(byte[] arr, int id, string material,SQL_Structure.Stl option)
         {
             conn.Open();
             MySqlCommand cmd = conn.CreateCommand();
@@ -215,78 +201,142 @@ namespace SQL_Client
                 cmd.ExecuteNonQuery();
             }catch(Exception)
             {
-                MessageBox.Show("資料庫出問題，請洽苦命的工程師 ErrorA01");
+                Debug.Print("model exist already in model table");
             }
 
             switch(option){
-                case SQL_Structure.Stl.main :
-                    cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl=" 
-                                            + "@stl" + " where parent_id=" + id.ToString();
+                case SQL_Structure.Stl.main:
+                    cmd.CommandText = "update " + "sys.model_table" + " set `model_material`='" + material + "' where parent_id=" + id.ToString();
+                    cmd.ExecuteNonQuery();
+                    if (material != "none")
+                    {
+                        cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl="
+                       + "@stl" + " where parent_id=" + id.ToString();
+                        cmd.Parameters.Add("@stl", MySqlDbType.MediumBlob);
+                        cmd.Parameters["@stl"].Value = arr;
+                        cmd.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Main model material cannot be null");
+                        return false;
+                    }
                     break;
                 case SQL_Structure.Stl.mainstone:
-                    cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_mainstone="
-                                        + "@stl" + " where parent_id=" + id.ToString();
+                    cmd.CommandText = "update " + "sys.model_table" + " set `model_material_mainstone`='" + material + "' where parent_id=" + id.ToString();
+                    cmd.ExecuteNonQuery();
+                    if (material != "none")
+                    {
+                        cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_mainstone="
+                       + "@stl" + " where parent_id=" + id.ToString();
+                        cmd.Parameters.Add("@stl", MySqlDbType.MediumBlob);
+                        cmd.Parameters["@stl"].Value = arr;
+                        cmd.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_mainstone= NULL" + " where parent_id=" + id.ToString();
+                        cmd.ExecuteNonQuery();
+                    }
                     break;
-                case SQL_Structure.Stl.substone:
-                    cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_substone="
-                                        + "@stl" + " where parent_id=" + id.ToString();
+                case SQL_Structure.Stl.substone1:
+                    cmd.CommandText = "update " + "sys.model_table" + " set `model_material_substone1`='" + material + "' where parent_id=" + id.ToString();
+                    cmd.ExecuteNonQuery();
+                    if (material != "none")
+                    {
+                        cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_substone1="
+                       + "@stl" + " where parent_id=" + id.ToString();
+                        cmd.Parameters.Add("@stl", MySqlDbType.MediumBlob);
+                        cmd.Parameters["@stl"].Value = arr;
+                        cmd.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_substone1= NULL" + " where parent_id=" + id.ToString();
+                        cmd.ExecuteNonQuery();
+                    }
+                    break;
+                case SQL_Structure.Stl.substone2:
+                    cmd.CommandText = "update " + "sys.model_table" + " set `model_material_substone2`='" + material + "' where parent_id=" + id.ToString();
+                    cmd.ExecuteNonQuery();
+                    if (material != "none")
+                    {
+                        cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_substone2="
+                       + "@stl" + " where parent_id=" + id.ToString();
+                        cmd.Parameters.Add("@stl", MySqlDbType.MediumBlob);
+                        cmd.Parameters["@stl"].Value = arr;
+                        cmd.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_substone2= NULL" + " where parent_id=" + id.ToString();
+                        cmd.ExecuteNonQuery();
+                    }
+                    break;
+                case SQL_Structure.Stl.substone3:
+                    cmd.CommandText = "update " + "sys.model_table" + " set `model_material_substone3`='" + material + "' where parent_id=" + id.ToString();
+                    cmd.ExecuteNonQuery();
+                    if (material != "none")
+                    {
+                        cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_substone3="
+                       + "@stl" + " where parent_id=" + id.ToString();
+                        cmd.Parameters.Add("@stl", MySqlDbType.MediumBlob);
+                        cmd.Parameters["@stl"].Value = arr;
+                        cmd.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_substone3= NULL" + " where parent_id=" + id.ToString();
+                        cmd.ExecuteNonQuery();
+                    }
+                    break;
+                case SQL_Structure.Stl.substone4:
+                    cmd.CommandText = "update " + "sys.model_table" + " set `model_material_substone4`='" + material + "' where parent_id=" + id.ToString();
+                    cmd.ExecuteNonQuery();
+                    if (material != "none")
+                    {
+                        cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_substone4="
+                       + "@stl" + " where parent_id=" + id.ToString();
+                        cmd.Parameters.Add("@stl", MySqlDbType.MediumBlob);
+                        cmd.Parameters["@stl"].Value = arr;
+                        cmd.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_substone4 = NULL" + " where parent_id=" + id.ToString();
+                        cmd.ExecuteNonQuery();
+                    }
+                    break;
+                case SQL_Structure.Stl.substone5:
+                    cmd.CommandText = "update " + "sys.model_table" + " set `model_material_substone5`='" + material + "' where parent_id=" + id.ToString();
+                    cmd.ExecuteNonQuery();
+                    if (material != "none")
+                    {
+                        cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_substone5="
+                       + "@stl" + " where parent_id=" + id.ToString();
+                        cmd.Parameters.Add("@stl", MySqlDbType.MediumBlob);
+                        cmd.Parameters["@stl"].Value = arr;
+                        cmd.ExecuteNonQuery();
+                    }
+                    else
+                    {
+                        cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_substone5= NULL"+ " where parent_id=" + id.ToString();
+                        cmd.ExecuteNonQuery();
+                    }
                     break;
                 default:
                     conn.Close();
                     return false;                    
             }
-            cmd.Parameters.Add("@stl", MySqlDbType.MediumBlob);
-            cmd.Parameters["@stl"].Value = arr;
-            cmd.ExecuteNonQuery();
+
+
             
             conn.Close();
             return true;
         }
 
 
-        public bool updateStl(byte[] arr, string material, int id, int subseq)
-        {
-            /*!!!!!  if materials == none  => set null
 
-
-         /*   conn.Open();
-            MySqlCommand cmd = conn.CreateCommand();
-
-            try
-            {
-                cmd.CommandText = "INSERT INTO `sys`.`model_table` (`parent_id`) VALUES( " + id.ToString() + ")";
-                cmd.ExecuteNonQuery();
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("資料庫出問題，請洽苦命的工程師 ErrorA01");
-            }
-
-            switch (option)
-            {
-                case SQL_Structure.Stl.main:
-                    cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl="
-                                            + "@stl" + " where parent_id=" + id.ToString();
-                    break;
-                case SQL_Structure.Stl.mainstone:
-                    cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_mainstone="
-                                        + "@stl" + " where parent_id=" + id.ToString();
-                    break;
-                case SQL_Structure.Stl.substone:
-                    cmd.CommandText = "update " + "sys.model_table" + " set design_model_stl_substone="
-                                        + "@stl" + " where parent_id=" + id.ToString();
-                    break;
-                default:
-                    conn.Close();
-                    return false;
-            }
-            cmd.Parameters.Add("@stl", MySqlDbType.MediumBlob);
-            cmd.Parameters["@stl"].Value = arr;
-            cmd.ExecuteNonQuery();
-
-            conn.Close();*/
-            return true;
-        }
 
         public bool update3dm(string arr, int id)
         {
@@ -345,13 +395,6 @@ namespace SQL_Client
         {
             SQL_Structure sql_struct = new SQL_Structure();
             conn.Open();
-            /*
-            if(conn.State != ConnectionState.Open)
-            {
-                conn.Close();
-                return sql_struct;
-            }
-            */
             //add query
             command.CommandText = "select * from " + database + "." + table + " where model_id='" + model_id + "'";
             adapter = new MySqlDataAdapter(command);
@@ -376,6 +419,7 @@ namespace SQL_Client
             adapter.Dispose();
             t.Dispose();
 
+            //Load Stone
             if (sql_struct.stone != "none")
             {
                 command.CommandText = "select * from " + database + "." + "stone_table" + " where parent_id='" + sql_struct.id + "'";
@@ -387,8 +431,22 @@ namespace SQL_Client
                 adapter.Dispose();
                 t.Dispose();
             }
-            //!!!!!@!@!!@@!@ remember to load substone
 
+            //Load Substone =>only materials
+            command.CommandText = "select model_material, model_material_mainstone, model_material_substone1,"+
+                                         "model_material_substone2, model_material_substone3, model_material_substone4, model_material_substone5 from " 
+                                                                + database + "." + "model_table" + " where parent_id='" + sql_struct.id + "'";
+            adapter = new MySqlDataAdapter(command);
+            t = new DataTable();
+            adapter.Fill(t);
+            sql_struct.mainMaterial = t.Rows[0][0].ToString();
+            sql_struct.mainStoneMaterial = t.Rows[0][1].ToString();
+            for(int i = 0; i < 5; i++)
+            {
+                sql_struct.substoneMaterials[i] = t.Rows[0][i + 2].ToString();
+            }
+            adapter.Dispose();
+            t.Dispose();
             conn.Close();
             return sql_struct;
         }
@@ -449,8 +507,8 @@ namespace SQL_Client
         public enum Stone { diamond, jade, redblue, pearl, other, none };
         public enum StoneShape {none, drop, heart, circle, oval, rect, eye, god, other};
 
-        public enum Stl {main, mainstone, substone };
-        public enum StlMaterial {none, diamond, jade, redblue, pearl, gold, plat, rose};
+        public enum Stl {main, mainstone, substone1,substone2 , substone3, substone4, substone5};
+        public enum StlMaterial {none, diamond, jade, redblue, pearl, au, pt, rose};
 
         public string gender { get; set; }
         public string category { get; set; }
@@ -471,6 +529,9 @@ namespace SQL_Client
         public byte[] modelstl_main;
         public byte[] modelstl_mainstone;
         public byte[][] modelstl_substone;
+
+        public string mainMaterial;
+        public string mainStoneMaterial;
         public string[] substoneMaterials;
 
 
@@ -484,7 +545,7 @@ namespace SQL_Client
             this.isExistInDB = false;
             this.numofStl = 0;
             this.modelstl_substone = new byte[5][];
-            this.substoneMaterials = new string[5];
+            this.substoneMaterials = new string[5] { "none", "none", "none", "none", "none"};
         }
 
     }

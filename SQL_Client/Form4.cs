@@ -56,66 +56,66 @@ namespace SQL_Client
             }
             else
             {
-                if (model.modelstl_substone[0] == null)
+                if (model.substoneMaterials[0]== Enum.GetName(typeof(SQL_Structure.StlMaterial),SQL_Structure.StlMaterial.none))
                 {   //no model
                     listBox1.SetSelected(0, true);
                     status[0] = ModelStatus.empty;
                 }
                 else
                 {   //has model
-                    listBox1.Text = "資料庫";
+                    textBox1.Text = "資料庫";
                     int s1 = (int)Enum.Parse(typeof(SQL_Structure.StlMaterial), model.substoneMaterials[0]);
                     listBox1.SetSelected(s1, true);
                     status[0] = ModelStatus.exist;
                 }
 
-                if (model.modelstl_substone[1] == null)
+                if (model.substoneMaterials[1] == Enum.GetName(typeof(SQL_Structure.StlMaterial), SQL_Structure.StlMaterial.none))
                 {
                     listBox2.SetSelected(0, true);
                     status[1] = ModelStatus.empty;
                 }
                 else
                 {
-                    listBox2.Text = "資料庫";
+                    textBox2.Text = "資料庫";
                     int s1 = (int)Enum.Parse(typeof(SQL_Structure.StlMaterial), model.substoneMaterials[1]);
                     listBox2.SetSelected(s1, true);
                     status[1] = ModelStatus.exist;
                 }
 
-                if (model.modelstl_substone[2] == null)
+                if (model.substoneMaterials[2] == Enum.GetName(typeof(SQL_Structure.StlMaterial), SQL_Structure.StlMaterial.none))
                 {
                     listBox3.SetSelected(0, true);
                     status[2] = ModelStatus.empty;
                 }
                 else
                 {
-                    listBox3.Text = "資料庫";
+                    textBox3.Text = "資料庫";
                     int s1 = (int)Enum.Parse(typeof(SQL_Structure.StlMaterial), model.substoneMaterials[2]);
                     listBox3.SetSelected(s1, true);
                     status[2] = ModelStatus.exist;
                 }
 
-                if (model.modelstl_substone[3] == null)
+                if (model.substoneMaterials[3] == Enum.GetName(typeof(SQL_Structure.StlMaterial), SQL_Structure.StlMaterial.none))
                 {
                     listBox4.SetSelected(0, true);
                     status[3] = ModelStatus.empty;
                 }
                 else
                 {
-                    listBox4.Text = "資料庫";
+                    textBox4.Text = "資料庫";
                     int s1 = (int)Enum.Parse(typeof(SQL_Structure.StlMaterial), model.substoneMaterials[3]);
                     listBox4.SetSelected(s1, true);
                     status[3] = ModelStatus.exist;
                 }
 
-                if (model.modelstl_substone[4] == null)
+                if (model.substoneMaterials[4] == Enum.GetName(typeof(SQL_Structure.StlMaterial), SQL_Structure.StlMaterial.none))
                 {
                     listBox5.SetSelected(0, true);
                     status[4] = ModelStatus.empty;
                 }
                 else
                 {
-                    listBox5.Text = "資料庫";
+                    textBox5.Text = "資料庫";
                     int s1 = (int)Enum.Parse(typeof(SQL_Structure.StlMaterial), model.substoneMaterials[4]);
                     listBox5.SetSelected(s1, true);
                     status[4] = ModelStatus.exist;
