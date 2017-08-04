@@ -71,8 +71,8 @@ namespace SQL_Client
 
             //initial sql
             sql = new SQL_Util();
-            sql.IP = "127.0.0.1";//"118.170.189.76";
-            sql.userAccount = "root";//account;
+            sql.IP = "118.170.189.76";
+            sql.userAccount = "shooter";//account;
             sql.userPwd = "11111111";//password;
             sql.database = "sys";
 
@@ -227,7 +227,8 @@ namespace SQL_Client
                     }
                 }
             }
-            
+
+            sql.updateNumofStl(current_model);
             return true;
         }
 
@@ -251,13 +252,14 @@ namespace SQL_Client
                     this.status.BackColor = Color.Red;
                     this.status.Text = "入庫中";
                     this.Refresh();
+                    this.DisableControls(this);
 
                     sql.Update(current_model);
                     checkFilesAndUpdate();
-                    
                     this.status.BackColor = Color.YellowGreen;
                     this.status.Text = "已入庫";
                     this.Refresh();
+                    this.EnableControls( this );
                 }
                 else
                 {
@@ -269,22 +271,39 @@ namespace SQL_Client
                     this.status.BackColor = Color.Red;
                     this.status.Text = "入庫中";
                     this.Refresh();
+                    this.DisableControls( this );
 
                     sql.Insert(current_model);
                     checkFilesAndUpdate();
-                    
+
                     this.status.BackColor = Color.YellowGreen;
                     this.status.Text = "已入庫";
                     this.Refresh();
+                    this.EnableControls( this );
                 }
-            }
+            } 
             else
             {
                 MessageBox.Show("與資料庫連線失敗，請重新開啟");
             }
         }
 
-
+        private void DisableControls(Control con)
+        {
+            foreach (Control c in con.Controls)
+            {
+                DisableControls(c);
+            }
+            if(con.GetType()==typeof(Button))con.Enabled = false;
+        }
+        private void EnableControls(Control con)
+        {
+            foreach (Control c in con.Controls)
+            {
+                EnableControls(c);
+            }
+            if (con.GetType() == typeof(Button)) con.Enabled = true;
+        }
          
         private void GetNext_Click(object sender, EventArgs e)
         {

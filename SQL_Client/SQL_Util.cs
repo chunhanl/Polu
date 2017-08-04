@@ -335,8 +335,22 @@ namespace SQL_Client
             return true;
         }
 
+        public void updateNumofStl(SQL_Structure current_model)
+        {
+            int count = 0;
+            if (current_model.mainMaterial != "none") count++;
+            if (current_model.stone != "none") count++;
+            for (int i = 0; i < 5; i++)
+            {
+                if (current_model.substoneMaterials[i] != "none") count++;
+            }
 
-
+            conn.Open();
+            command.CommandText = "update " + database + "." + "model_table"
+                                    + " set num_of_stl = " + count.ToString() + " where parent_id = " + current_model.id;
+            command.ExecuteNonQuery();
+            conn.Close();
+        }
 
         public bool update3dm(string arr, int id)
         {
@@ -524,8 +538,6 @@ namespace SQL_Client
 
         public Image preview_image;
         public string model3dm;
-        public int numofStl;
-
         public byte[] modelstl_main;
         public byte[] modelstl_mainstone;
         public byte[][] modelstl_substone;
@@ -543,7 +555,6 @@ namespace SQL_Client
             this.weight = 0;
             this.work_cost = 0;
             this.isExistInDB = false;
-            this.numofStl = 0;
             this.modelstl_substone = new byte[5][];
             this.substoneMaterials = new string[5] { "none", "none", "none", "none", "none"};
         }

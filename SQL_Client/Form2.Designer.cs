@@ -277,11 +277,14 @@
             // 
             this.status.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.status.BackColor = System.Drawing.Color.Cornsilk;
+            this.status.Enabled = false;
             this.status.Font = new System.Drawing.Font("PMingLiU", 21.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.status.Location = new System.Drawing.Point(1055, 13);
             this.status.Name = "status";
+            this.status.ReadOnly = true;
             this.status.Size = new System.Drawing.Size(110, 42);
             this.status.TabIndex = 29;
+            this.status.TabStop = false;
             // 
             // btn_pre
             // 
